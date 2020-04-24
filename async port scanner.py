@@ -1,23 +1,21 @@
 """
-Async port scanner.
+Async_port_scanner
 """
-
-import time
 import asyncio
+import constant
+from contextlib import suppress
+import time
 
 
-async def connect_socket(ip: str, port: int):
+async def connect_socket(port: int):
     """
     Connect to given IP and port
 
-    :param ip: The ip for the socket to connect.
     :param port: The port for the socket to connect.
     """
-    try:
-        await asyncio.open_connection(ip, port)
+    with suppress(Exception):
+        await asyncio.open_connection(constant.ip, port)
         print(f"port {port} found!")
-    except WindowsError:
-        print("Connection failed!")
 
 
 def time_measure(func):
@@ -40,8 +38,8 @@ async def main():
     """
     Execute connect_socket method through many ports asynchronously
     """
-    await asyncio.gather(*[connect_socket("127.0.0.1", i)
-                           for i in range(1, 500)])
+    await asyncio.gather(*[connect_socket(port)
+                           for port in range(constant.start_port, constant.end_port)])
 
 
 if __name__ == '__main__':

@@ -1,24 +1,22 @@
 """
-Synchronized port scanner.
+Synchronized_port_scanner
 """
-
-from socket import socket, AF_INET, SOCK_STREAM
+import constant
+from contextlib import suppress
+from socket import AF_INET, socket, SOCK_STREAM
 import time
 
 
-def connect_socket(guest: socket, ip: str, port: int):
+def connect_socket(guest: socket, port: int):
     """
-    Connect given socket to given ip and port
+    Connect a given socket to a given ip and port
 
    :param guest: The socket to connect.
-   :param ip: The ip for the socket to connect.
    :param port: The port for the socket to connect.
     """
-    try:
-        guest.connect((ip, port))
+    with suppress(Exception):
+        guest.connect((constant.ip, port))
         print(f"port {port} found")
-    except ConnectionError:
-        print("connection failed!")
 
 
 def time_measure(func):
@@ -42,9 +40,9 @@ def main():
     Execute connect_socket method through many ports with unused sockets
     synchronously
     """
-    for i in range(1, 1000):
-        s = socket(AF_INET, SOCK_STREAM)
-        connect_socket(s, "127.0.0.1", i)
+    for port in range(constant.start_port, constant.end_port):
+        guest = socket(AF_INET, SOCK_STREAM)
+        connect_socket(guest, port)
 
 
 if __name__ == '__main__':
